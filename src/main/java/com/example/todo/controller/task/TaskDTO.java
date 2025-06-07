@@ -1,7 +1,5 @@
 package com.example.todo.controller.task;
 
-import com.example.todo.service.task.TaskEntity;
-
 public record TaskDTO(
         long id,
         String summary,

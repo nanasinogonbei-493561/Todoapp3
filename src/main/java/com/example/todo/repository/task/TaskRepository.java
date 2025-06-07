@@ -1,6 +1,5 @@
 package com.example.todo.repository.task;
 
-import com.example.todo.service.task.TaskEntity;
 import com.example.todo.service.task.TaskSearchEntity;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
