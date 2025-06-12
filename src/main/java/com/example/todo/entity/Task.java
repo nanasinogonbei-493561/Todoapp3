@@ -4,7 +4,7 @@ import com.example.todo.service.task.TaskStatus;
 import lombok.ToString;
 import jakarta.persistence.*;
 import lombok.Data;
-import nonapi.io.github.classgraph.json.Id;
+
 import org.springframework.boot.autoconfigure.web.WebProperties;
 
 @Data

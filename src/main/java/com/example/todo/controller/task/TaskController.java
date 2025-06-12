@@ -1,6 +1,10 @@
 package com.example.todo.controller.task;
 
+import com.example.todo.entity.Category;
+import com.example.todo.entity.Task;
+import com.example.todo.service.category.CategoryService;
 import com.example.todo.service.task.TaskService;
+import com.example.todo.service.task.TaskStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,15 +24,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class TaskController {
 
     private final TaskService taskService;
+    private final CategoryService categoryService;
 
     @GetMapping
-    public String list(TaskSearchForm searchForm, Model model) {
-        var taskList = taskService.find(searchForm.toEntity())
+    public String list(Model model) {
+        var taskList = taskService.findAll()
                 .stream()
                 .map(TaskDTO::toDTO)
                 .toList();
         model.addAttribute("taskList", taskList);
-        model.addAttribute("searchDTO", searchForm.toDTO());
+        System.out.println(taskList);
         return "tasks/list";
     }
 
@@ -43,7 +48,16 @@ public class TaskController {
 
     @GetMapping("/creationForm")
     public String showCreationForm(@ModelAttribute TaskForm form, Model model) {
+        System.out.println("creationForm");
         model.addAttribute("mode", "CREATE");
+        /* var categoryList = categoryService.find()
+                    .stream()
+                    .map(CategoryDTO::toDTO)
+                    .toList();
+           model.addAttribute("categoryList", categoryList);
+         */
+        var categoryList = categoryService.findAll();
+        model.addAttribute("categoryList", categoryList);
         return "tasks/form";
     }
 
@@ -52,7 +66,11 @@ public class TaskController {
         if (bindingResult.hasErrors()) {
             return showCreationForm(form, model);
         }
-        taskService.create(form.toEntity());
+        Category category = categoryService.findById(form.category_id()).get();
+
+        Task task = new Task(category, form.summary(), form.description(), TaskStatus.valueOf(form.status()));
+
+        taskService.create(task);
         return "redirect:/tasks";
     }
 
@@ -61,8 +79,12 @@ public class TaskController {
         var form = taskService.findById(id)
                 .map(TaskForm::fromEntity)
                 .orElseThrow(TaskNotFoundException::new);
+
+        var categoryList = categoryService.findAll();
+        
         model.addAttribute("taskForm", form);
         model.addAttribute("mode", "EDIT");
+        model.addAttribute("categoryList", categoryList);
         return "tasks/form";
     }
 
@@ -77,7 +99,20 @@ public class TaskController {
             model.addAttribute("mode", "EDIT");
             return "tasks/form";
         }
+        /*
         var entity = form.toEntity(id);
+        taskService.update(entity);
+        return "redirect:/tasks/{id}";
+         */
+
+        Task entity = taskService.findById(id).get();
+        Category category = categoryService.findById(form.category_id()).get();
+        // var entity = form.toEntity(id);
+        entity.setDescription(form.description());
+        entity.setSummary(form.summary());
+        // entity.setCategory_id(form.category_id());
+        entity.setStatus(TaskStatus.valueOf(form.status()));
+        entity.setCategory(category);
         taskService.update(entity);
         return "redirect:/tasks/{id}";
     }
