@@ -23,6 +23,13 @@
                 <textarea id="descriptionInput" th:field="*{description}" class="form-control" th:errorclass="is-invalid" rows="10"></textarea>
                 <span th:errors="*{description}" class="invalid-feedback"></span>
             </div>
+            <select name="category_id" th:field="*{category_id}" class="form-select">
+                <option value="" selected>カテゴリを選択</option>
+                <option th:each="category : ${categoryList}"
+                        th:value="${category.id}"
+                        th:text="${category.name}">
+                </option>
+            </select>
             <div class="form-group mt-3">
                 <label for="statusInput" class="form-label">ステータス</label>
                 <select id="statusInput" th:field="*{status}" class="form-control" th:errorclass="is-invalid">
