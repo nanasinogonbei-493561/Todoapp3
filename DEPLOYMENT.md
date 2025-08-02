@@ -21,10 +21,35 @@
 ## デプロイ手順
 
 ### 1. 環境変数の設定
+
+#### 方法1: 自動設定スクリプト（推奨）
+```bash
+# 本番環境の環境変数を設定
+./scripts/setup-env.sh prod
+
+# 開発環境の環境変数を設定
+./scripts/setup-env.sh dev
+```
+
+#### 方法2: 手動設定
+```bash
+# 環境変数ファイルを作成
+cp env.example .env.prod
+
+# 環境変数ファイルを編集（パスワード等を設定）
+nano .env.prod
+
+# 環境変数を読み込み
+source .env.prod
+```
+
+#### 方法3: 直接設定
 ```bash
 export MYSQL_URL=jdbc:mysql://your-mysql-host:3306/todo_prod?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
 export MYSQL_USERNAME=your_username
-export MYSQL_PASSWORD=your_password
+export MYSQL_PASSWORD=your_secure_password
+export DB_POOL_SIZE=10
+export SERVER_PORT=8080
 ```
 
 ### 2. MySQLデータベースの準備
