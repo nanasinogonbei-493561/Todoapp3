@@ -1,11 +1,9 @@
 package com.example.todo.controller.task;
 
-import com.example.todo.entity.Category;
-import com.example.todo.entity.Task;
-import com.example.todo.service.category.CategoryService;
-import com.example.todo.service.task.TaskService;
-import com.example.todo.service.task.TaskStatus;
-import lombok.RequiredArgsConstructor;
+import java.util.HashMap;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,24 +15,47 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import com.example.todo.entity.Category;
+import com.example.todo.entity.Task;
+import com.example.todo.service.category.CategoryService;
+import com.example.todo.service.task.TaskService;
+import com.example.todo.service.task.TaskStatus;
+import com.example.todo.util.LogUtils;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/tasks")
 public class TaskController {
 
+    private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
+    
     private final TaskService taskService;
     private final CategoryService categoryService;
 
     @GetMapping
     public String list(Model model) {
-        var taskList = taskService.findAll()
-                .stream()
-                .map(TaskDTO::toDTO)
-                .toList();
-        model.addAttribute("taskList", taskList);
-        System.out.println(taskList);
-        return "tasks/list";
+        long startTime = System.currentTimeMillis();
+        
+        try {
+            var taskList = taskService.findAll()
+                    .stream()
+                    .map(TaskDTO::toDTO)
+                    .toList();
+            model.addAttribute("taskList", taskList);
+            
+            Map<String, String> context = new HashMap<>();
+            context.put("operation", "list_tasks");
+            context.put("task_count", String.valueOf(taskList.size()));
+            LogUtils.logPerformance(logger, "Task list retrieval", System.currentTimeMillis() - startTime, context);
+            
+            return "tasks/list";
+        } catch (Exception e) {
+            Map<String, String> context = new HashMap<>();
+            context.put("operation", "list_tasks");
+            LogUtils.logError(logger, "Failed to retrieve task list", e, context);
+            throw e;
+        }
     }
 
     @GetMapping("/{id}")
@@ -48,7 +69,6 @@ public class TaskController {
 
     @GetMapping("/creationForm")
     public String showCreationForm(@ModelAttribute TaskForm form, Model model) {
-        System.out.println("creationForm");
         model.addAttribute("mode", "CREATE");
         /* var categoryList = categoryService.find()
                     .stream()

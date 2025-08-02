@@ -19,24 +19,19 @@ public class CategoryController {
 
     @GetMapping
     public String list(CategoryForm form, Model model) {
-        System.out.println("Categories");
         /* var categoryList = categoryService.find()
                   .stream()
                   .map(CategoryDTO::toDTO)
                   .toList();
          */
         var categoryList = categoryService.findAll();
-        System.out.println(categoryList);
         model.addAttribute("categoryList", categoryList);
         return  "categories/list";
     }
 
     @GetMapping("/{id}")
     public String showDetail(@PathVariable("id") long searchId, Model model) {
-        System.out.println(searchId);
-
         var categoryEntity = categoryService.findById(searchId).orElse(null);
-        System.out.println(categoryEntity);
 
         if (categoryEntity == null) {
             return  "rediret:/";
@@ -54,8 +49,6 @@ public class CategoryController {
 
     @PostMapping("/{id}/editForm")
     public String create(@Validated CategoryForm form, BindingResult bindingResult, Model model) {
-        System.out.println(form);
-
         if (bindingResult.hasErrors()) {
             return showCreationForm(form, model);
         }
@@ -101,9 +94,9 @@ public class CategoryController {
 
 //    POST /tasks/1 (hidden: _method: delete)
 //    -> DELETE /tasks/1
-    @DeleteMapping("{is}")
+    @DeleteMapping("{id}")
     public String delete(@PathVariable("id") long id) {
-
+        categoryService.delete(id);
         return "redirect:/categories";
     }
 }

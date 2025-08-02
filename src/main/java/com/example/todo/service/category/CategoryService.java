@@ -18,13 +18,11 @@ public class CategoryService {
 
 //    findSimple -> findAllを使って全件取得
     public List<Category> findAll() {
-        System.out.println("categoryRepository select");
         return categoryRepository.findAll();  // JPAリポジトリのfindAllメソッド
     }
 
 //    find -> 任意の条件で検索
     public List<Category> find() {
-        System.out.println("categoryRepository select");
         return categoryRepository.findAll();  // 現在は全件取得（条件を追加する場合はクエリメソッドを仕様）
     }
 
@@ -35,13 +33,16 @@ public class CategoryService {
 
     @Transactional
     public void create(Category newEntity) {
-        System.out.println(newEntity);
         categoryRepository.save(newEntity);  // JPAのsaveメソッド（新規作成・更新）
     }
 
     @Transactional
     public void update(Category newEntity) {
-        System.out.println(newEntity);
         categoryRepository.save(newEntity);  // JPAのsaveメソッド（新規作成・更新）
+    }
+
+    @Transactional
+    public void delete(long id) {
+        categoryRepository.deleteById(id);
     }
 }
