@@ -72,6 +72,9 @@ java -jar -Dspring.profiles.active=prod build/libs/todo-0.0.1-SNAPSHOT.jar
 
 ### 4. 本番環境での起動
 ```bash
+# Java 17を使用して起動
+export JAVA_HOME=/Users/sugawara/Library/Java/JavaVirtualMachines/ms-17.0.15/Contents/Home
+
 # 環境変数とプロファイルを指定して起動
 java -jar \
   -Dspring.profiles.active=prod \
