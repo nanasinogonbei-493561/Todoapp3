@@ -1,4 +1,9 @@
 -- 本番環境用MySQLスキーマ
+-- 文字エンコーディング設定
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+SET character_set_connection=utf8mb4;
+
 -- 既存のテーブルがあれば削除（注意: 本番環境ではデータが失われます）
 DROP TABLE IF EXISTS tasks;
 DROP TABLE IF EXISTS categories;
@@ -11,7 +16,7 @@ CREATE TABLE categories (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_name (name)
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- tasks テーブル作成
 CREATE TABLE tasks (
@@ -28,7 +33,7 @@ CREATE TABLE tasks (
     INDEX idx_category_id (category_id),
     INDEX idx_status (status),
     INDEX idx_created_at (created_at)
-);
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- 初期データ挿入
 INSERT INTO categories (name, description) VALUES 

@@ -71,12 +71,23 @@ java -jar -Dspring.profiles.active=prod build/libs/todo-0.0.1-SNAPSHOT.jar
 ```
 
 ### 4. 本番環境での起動
+
+#### 方法1: 起動スクリプトを使用（推奨）
+```bash
+# 本番環境用起動スクリプトを実行
+./scripts/start-prod.sh
+```
+
+#### 方法2: 手動で起動
 ```bash
 # Java 17を使用して起動
 export JAVA_HOME=/Users/sugawara/Library/Java/JavaVirtualMachines/ms-17.0.15/Contents/Home
 
+# 文字エンコーディング設定
+export JAVA_OPTS="-Dfile.encoding=UTF-8 -Duser.language=ja -Duser.country=JP"
+
 # 環境変数とプロファイルを指定して起動
-java -jar \
+java $JAVA_OPTS -jar \
   -Dspring.profiles.active=prod \
   -DMYSQL_URL=$MYSQL_URL \
   -DMYSQL_USERNAME=$MYSQL_USERNAME \
