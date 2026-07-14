@@ -44,3 +44,8 @@ out/
 ### Logs ###
 logs/
 *.log
+
+### Docker ###
+docker.env
+docker.env.local
+backups/
